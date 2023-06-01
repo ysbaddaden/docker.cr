@@ -6,13 +6,13 @@ authors:
 
 license: MIT
 
-dependencies:
-  json_mapping:
-    github: crystal-lang/json_mapping.cr
-
 development_dependencies:
   webmock:
     github: manastech/webmock.cr
     branch: master
+
+  swagger:
+    github: ysbaddaden/swagger.cr
+    branch: main
 
 crystal: ">= 1.0.0"

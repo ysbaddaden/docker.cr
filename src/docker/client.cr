@@ -5,9 +5,6 @@ require "./client/*"
 
 module Docker
   class Client
-    include Docker::Client::Info
-    include Docker::Client::Containers
-
     delegate :get, :post, :put, :patch, :head, to: client
 
     DEFAULT_URL = "unix:///var/run/docker.sock"
