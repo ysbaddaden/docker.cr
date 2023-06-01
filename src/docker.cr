@@ -5,8 +5,7 @@ require "./core_ext/**"
 require "./docker/*"
 
 module Docker
-  extend self
-  def client
+  def self.client
     Docker::Client.new
   end
 end

@@ -7,12 +7,12 @@ module Docker
   class Client
     delegate :get, :post, :put, :patch, :head, to: client
 
-    DEFAULT_URL = "unix:///var/run/docker.sock"
+    DEFAULT_URL       = "unix:///var/run/docker.sock"
     DEFAULT_CERT_PATH = "#{ENV["HOME"]}/.docker"
 
-    getter url        : URI
+    getter url : URI
     setter verify_tls : Bool | Nil
-    setter cert_path  : String | Nil
+    setter cert_path : String | Nil
 
     @ssl_context : OpenSSL::SSL::Context | Nil
 
@@ -73,6 +73,5 @@ module Docker
     private def cert_file_path
       "#{cert_path}/cert.pem"
     end
-
   end
 end

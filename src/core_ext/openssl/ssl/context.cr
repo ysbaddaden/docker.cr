@@ -1,5 +1,4 @@
 class OpenSSL::SSL::Context
-  
   def ca_file=(file)
     if LibSSL.ssl_ctx_load_verify_locations(@handle, file, nil) == 0
       raise "unable to set CA file"
