@@ -16,8 +16,14 @@ def fix_network_operations(document)
   end
 end
 
+def fix_services_inspect_previous_spec(document)
+  properties = document.definitions["Service"].properties
+  properties["PreviousSpec"] ||= properties["Spec"].dup
+end
+
 document = Swagger.from_file(ARGV[0])
 fix_network_operations(document) if document.info.version.to_s < "1.42"
+fix_services_inspect_previous_spec(document)
 
 generator = Generator.new(document)
 

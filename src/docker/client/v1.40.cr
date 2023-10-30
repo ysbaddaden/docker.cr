@@ -3065,7 +3065,10 @@ module Docker
     @[JSON::Field(key: "UpdateStatus")]
     property! update_status : Service::UpdateStatus?
 
-    def initialize(@id : String? = nil, @version : ObjectVersion? = nil, @created_at : Time? = nil, @updated_at : Time? = nil, @spec : ServiceSpec? = nil, @endpoint : Service::Endpoint? = nil, @update_status : Service::UpdateStatus? = nil)
+    @[JSON::Field(key: "PreviousSpec")]
+    property! previous_spec : ServiceSpec?
+
+    def initialize(@id : String? = nil, @version : ObjectVersion? = nil, @created_at : Time? = nil, @updated_at : Time? = nil, @spec : ServiceSpec? = nil, @endpoint : Service::Endpoint? = nil, @update_status : Service::UpdateStatus? = nil, @previous_spec : ServiceSpec? = nil)
     end
   end
 
