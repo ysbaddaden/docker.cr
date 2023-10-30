@@ -229,7 +229,7 @@ generator.paths.each_with_index do |path, i|
   # OPTIMIZE: 1. stream the HTTP response (client.get { |response| }
   # OPTIMIZE: 2. parse JSON from response.body_io directly
   # OPTIMIZE: 3. yield response when body is binary (Bytes)
-  print "      http_client."
+  print "      "
   print path.method
   print '('
   print '"'

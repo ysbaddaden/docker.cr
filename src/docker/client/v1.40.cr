@@ -4644,7 +4644,7 @@ module Docker
         qs.add("size", size) unless size.nil?
         qs.add("filters", filters) unless filters.nil?
       end
-      http_client.get("/v1.40/containers/json?#{query}") do |response|
+      get("/v1.40/containers/json?#{query}") do |response|
         case response.status_code
         when 200
           Array(ContainerSummary).from_json(response.body_io)
@@ -4661,7 +4661,7 @@ module Docker
         qs.add("name", name) unless name.nil?
       end
       headers = HTTP::Headers{"Content-Type" => "application/json"}
-      http_client.post("/v1.40/containers/create?#{query}", headers: headers, body: body.to_json) do |response|
+      post("/v1.40/containers/create?#{query}", headers: headers, body: body.to_json) do |response|
         case response.status_code
         when 201
           ContainerCreateResponse.from_json(response.body_io)
@@ -4677,7 +4677,7 @@ module Docker
       query = Params.build do |qs|
         qs.add("size", size) unless size.nil?
       end
-      http_client.get("/v1.40/containers/#{URI.encode_path_segment(id)}/json?#{query}") do |response|
+      get("/v1.40/containers/#{URI.encode_path_segment(id)}/json?#{query}") do |response|
         case response.status_code
         when 200
           ContainerInspectResponse.from_json(response.body_io)
@@ -4694,7 +4694,7 @@ module Docker
       query = Params.build do |qs|
         qs.add("ps_args", ps_args) unless ps_args.nil?
       end
-      http_client.get("/v1.40/containers/#{URI.encode_path_segment(id)}/top?#{query}") do |response|
+      get("/v1.40/containers/#{URI.encode_path_segment(id)}/top?#{query}") do |response|
         case response.status_code
         when 200
           ContainerTopResponse.from_json(response.body_io)
@@ -4717,7 +4717,7 @@ module Docker
         qs.add("timestamps", timestamps) unless timestamps.nil?
         qs.add("tail", tail) unless tail.nil?
       end
-      http_client.get("/v1.40/containers/#{URI.encode_path_segment(id)}/logs?#{query}") do |response|
+      get("/v1.40/containers/#{URI.encode_path_segment(id)}/logs?#{query}") do |response|
         case response.status_code
         when 200
           yield response.body_io
@@ -4731,7 +4731,7 @@ module Docker
     end
 
     def container_changes?(id : String) : Array(ContainerChangeResponseItem)?
-      http_client.get("/v1.40/containers/#{URI.encode_path_segment(id)}/changes") do |response|
+      get("/v1.40/containers/#{URI.encode_path_segment(id)}/changes") do |response|
         case response.status_code
         when 200
           Array(ContainerChangeResponseItem).from_json(response.body_io)
@@ -4745,7 +4745,7 @@ module Docker
     end
 
     def container_export?(id : String) : Nil
-      http_client.get("/v1.40/containers/#{URI.encode_path_segment(id)}/export") do |response|
+      get("/v1.40/containers/#{URI.encode_path_segment(id)}/export") do |response|
         case response.status_code
         when 200, 404
         when 500
@@ -4760,7 +4760,7 @@ module Docker
       query = Params.build do |qs|
         qs.add("stream", stream) unless stream.nil?
       end
-      http_client.get("/v1.40/containers/#{URI.encode_path_segment(id)}/stats?#{query}") do |response|
+      get("/v1.40/containers/#{URI.encode_path_segment(id)}/stats?#{query}") do |response|
         case response.status_code
         when 200
           JSON::Any.from_json(response.body_io)
@@ -4778,7 +4778,7 @@ module Docker
         qs.add("h", h) unless h.nil?
         qs.add("w", w) unless w.nil?
       end
-      http_client.post("/v1.40/containers/#{URI.encode_path_segment(id)}/resize?#{query}") do |response|
+      post("/v1.40/containers/#{URI.encode_path_segment(id)}/resize?#{query}") do |response|
         case response.status_code
         when 200
         when 404, 500
@@ -4793,7 +4793,7 @@ module Docker
       query = Params.build do |qs|
         qs.add("detachKeys", detach_keys) unless detach_keys.nil?
       end
-      http_client.post("/v1.40/containers/#{URI.encode_path_segment(id)}/start?#{query}") do |response|
+      post("/v1.40/containers/#{URI.encode_path_segment(id)}/start?#{query}") do |response|
         case response.status_code
         when 204, 304
         when 404, 500
@@ -4808,7 +4808,7 @@ module Docker
       query = Params.build do |qs|
         qs.add("t", t) unless t.nil?
       end
-      http_client.post("/v1.40/containers/#{URI.encode_path_segment(id)}/stop?#{query}") do |response|
+      post("/v1.40/containers/#{URI.encode_path_segment(id)}/stop?#{query}") do |response|
         case response.status_code
         when 204, 304
         when 404, 500
@@ -4823,7 +4823,7 @@ module Docker
       query = Params.build do |qs|
         qs.add("t", t) unless t.nil?
       end
-      http_client.post("/v1.40/containers/#{URI.encode_path_segment(id)}/restart?#{query}") do |response|
+      post("/v1.40/containers/#{URI.encode_path_segment(id)}/restart?#{query}") do |response|
         case response.status_code
         when 204
         when 404, 500
@@ -4838,7 +4838,7 @@ module Docker
       query = Params.build do |qs|
         qs.add("signal", signal) unless signal.nil?
       end
-      http_client.post("/v1.40/containers/#{URI.encode_path_segment(id)}/kill?#{query}") do |response|
+      post("/v1.40/containers/#{URI.encode_path_segment(id)}/kill?#{query}") do |response|
         case response.status_code
         when 204
         when 404, 409, 500
@@ -4851,7 +4851,7 @@ module Docker
 
     def container_update(id : String, update : ContainerUpdate) : ContainerUpdateResponse
       headers = HTTP::Headers{"Content-Type" => "application/json"}
-      http_client.post("/v1.40/containers/#{URI.encode_path_segment(id)}/update", headers: headers, body: update.to_json) do |response|
+      post("/v1.40/containers/#{URI.encode_path_segment(id)}/update", headers: headers, body: update.to_json) do |response|
         case response.status_code
         when 200
           ContainerUpdateResponse.from_json(response.body_io)
@@ -4867,7 +4867,7 @@ module Docker
       query = Params.build do |qs|
         qs.add("name", name)
       end
-      http_client.post("/v1.40/containers/#{URI.encode_path_segment(id)}/rename?#{query}") do |response|
+      post("/v1.40/containers/#{URI.encode_path_segment(id)}/rename?#{query}") do |response|
         case response.status_code
         when 204
         when 404, 409, 500
@@ -4879,7 +4879,7 @@ module Docker
     end
 
     def container_pause(id : String) : Nil
-      http_client.post("/v1.40/containers/#{URI.encode_path_segment(id)}/pause") do |response|
+      post("/v1.40/containers/#{URI.encode_path_segment(id)}/pause") do |response|
         case response.status_code
         when 204
         when 404, 500
@@ -4891,7 +4891,7 @@ module Docker
     end
 
     def container_unpause(id : String) : Nil
-      http_client.post("/v1.40/containers/#{URI.encode_path_segment(id)}/unpause") do |response|
+      post("/v1.40/containers/#{URI.encode_path_segment(id)}/unpause") do |response|
         case response.status_code
         when 204
         when 404, 500
@@ -4911,7 +4911,7 @@ module Docker
         qs.add("stdout", stdout) unless stdout.nil?
         qs.add("stderr", stderr) unless stderr.nil?
       end
-      http_client.post("/v1.40/containers/#{URI.encode_path_segment(id)}/attach?#{query}") do |response|
+      post("/v1.40/containers/#{URI.encode_path_segment(id)}/attach?#{query}") do |response|
         case response.status_code
         when 101, 200
         when 400, 404, 500
@@ -4928,7 +4928,7 @@ module Docker
         qs.add("logs", logs) unless logs.nil?
         qs.add("stream", stream) unless stream.nil?
       end
-      http_client.get("/v1.40/containers/#{URI.encode_path_segment(id)}/attach/ws?#{query}") do |response|
+      get("/v1.40/containers/#{URI.encode_path_segment(id)}/attach/ws?#{query}") do |response|
         case response.status_code
         when 101, 200, 404
         when 400, 500
@@ -4943,7 +4943,7 @@ module Docker
       query = Params.build do |qs|
         qs.add("condition", condition) unless condition.nil?
       end
-      http_client.post("/v1.40/containers/#{URI.encode_path_segment(id)}/wait?#{query}") do |response|
+      post("/v1.40/containers/#{URI.encode_path_segment(id)}/wait?#{query}") do |response|
         case response.status_code
         when 200
           ContainerWaitResponse.from_json(response.body_io)
@@ -4961,7 +4961,7 @@ module Docker
         qs.add("force", force) unless force.nil?
         qs.add("link", link) unless link.nil?
       end
-      http_client.delete("/v1.40/containers/#{URI.encode_path_segment(id)}?#{query}") do |response|
+      delete("/v1.40/containers/#{URI.encode_path_segment(id)}?#{query}") do |response|
         case response.status_code
         when 204
         when 400, 404, 409, 500
@@ -4976,7 +4976,7 @@ module Docker
       query = Params.build do |qs|
         qs.add("path", path)
       end
-      http_client.get("/v1.40/containers/#{URI.encode_path_segment(id)}/archive?#{query}") do |response|
+      get("/v1.40/containers/#{URI.encode_path_segment(id)}/archive?#{query}") do |response|
         case response.status_code
         when 200, 404
         when 400, 500
@@ -4994,7 +4994,7 @@ module Docker
         qs.add("copyUIDGID", copy_uidgid) unless copy_uidgid.nil?
       end
       headers = HTTP::Headers{"Content-Type" => "application/json"}
-      http_client.put("/v1.40/containers/#{URI.encode_path_segment(id)}/archive?#{query}", headers: headers, body: input_stream.to_json) do |response|
+      put("/v1.40/containers/#{URI.encode_path_segment(id)}/archive?#{query}", headers: headers, body: input_stream.to_json) do |response|
         case response.status_code
         when 200
         when 400, 403, 404, 500
@@ -5009,7 +5009,7 @@ module Docker
       query = Params.build do |qs|
         qs.add("path", path)
       end
-      http_client.head("/v1.40/containers/#{URI.encode_path_segment(id)}/archive?#{query}") do |response|
+      head("/v1.40/containers/#{URI.encode_path_segment(id)}/archive?#{query}") do |response|
         case response.status_code
         when 200
         when 400, 404, 500
@@ -5024,7 +5024,7 @@ module Docker
       query = Params.build do |qs|
         qs.add("filters", filters) unless filters.nil?
       end
-      http_client.post("/v1.40/containers/prune?#{query}") do |response|
+      post("/v1.40/containers/prune?#{query}") do |response|
         case response.status_code
         when 200
           ContainerPruneResponse.from_json(response.body_io)
@@ -5042,7 +5042,7 @@ module Docker
         qs.add("filters", filters) unless filters.nil?
         qs.add("digests", digests) unless digests.nil?
       end
-      http_client.get("/v1.40/images/json?#{query}") do |response|
+      get("/v1.40/images/json?#{query}") do |response|
         case response.status_code
         when 200
           Array(ImageSummary).from_json(response.body_io)
@@ -5082,7 +5082,7 @@ module Docker
         qs.add("outputs", outputs) unless outputs.nil?
       end
       headers = HTTP::Headers{"Content-Type" => "application/json"}
-      http_client.post("/v1.40/build?#{query}", headers: headers, body: input_stream.to_json) do |response|
+      post("/v1.40/build?#{query}", headers: headers, body: input_stream.to_json) do |response|
         case response.status_code
         when 200
         when 400, 500
@@ -5099,7 +5099,7 @@ module Docker
         qs.add("all", all) unless all.nil?
         qs.add("filters", filters) unless filters.nil?
       end
-      http_client.post("/v1.40/build/prune?#{query}") do |response|
+      post("/v1.40/build/prune?#{query}") do |response|
         case response.status_code
         when 200
           BuildPruneResponse.from_json(response.body_io)
@@ -5122,7 +5122,7 @@ module Docker
         qs.add("platform", platform) unless platform.nil?
       end
       headers = HTTP::Headers{"Content-Type" => "application/json"}
-      http_client.post("/v1.40/images/create?#{query}", headers: headers, body: input_image.to_json) do |response|
+      post("/v1.40/images/create?#{query}", headers: headers, body: input_image.to_json) do |response|
         case response.status_code
         when 200
         when 404, 500
@@ -5134,7 +5134,7 @@ module Docker
     end
 
     def image_inspect?(name : String) : ImageInspect?
-      http_client.get("/v1.40/images/#{URI.encode_path_segment(name)}/json") do |response|
+      get("/v1.40/images/#{URI.encode_path_segment(name)}/json") do |response|
         case response.status_code
         when 200
           ImageInspect.from_json(response.body_io)
@@ -5148,7 +5148,7 @@ module Docker
     end
 
     def image_history?(name : String) : Array(HistoryResponseItem)?
-      http_client.get("/v1.40/images/#{URI.encode_path_segment(name)}/history") do |response|
+      get("/v1.40/images/#{URI.encode_path_segment(name)}/history") do |response|
         case response.status_code
         when 200
           Array(HistoryResponseItem).from_json(response.body_io)
@@ -5165,7 +5165,7 @@ module Docker
       query = Params.build do |qs|
         qs.add("tag", tag) unless tag.nil?
       end
-      http_client.post("/v1.40/images/#{URI.encode_path_segment(name)}/push?#{query}") do |response|
+      post("/v1.40/images/#{URI.encode_path_segment(name)}/push?#{query}") do |response|
         case response.status_code
         when 200
         when 404, 500
@@ -5181,7 +5181,7 @@ module Docker
         qs.add("repo", repo) unless repo.nil?
         qs.add("tag", tag) unless tag.nil?
       end
-      http_client.post("/v1.40/images/#{URI.encode_path_segment(name)}/tag?#{query}") do |response|
+      post("/v1.40/images/#{URI.encode_path_segment(name)}/tag?#{query}") do |response|
         case response.status_code
         when 201
         when 400, 404, 409, 500
@@ -5197,7 +5197,7 @@ module Docker
         qs.add("force", force) unless force.nil?
         qs.add("noprune", noprune) unless noprune.nil?
       end
-      http_client.delete("/v1.40/images/#{URI.encode_path_segment(name)}?#{query}") do |response|
+      delete("/v1.40/images/#{URI.encode_path_segment(name)}?#{query}") do |response|
         case response.status_code
         when 200
           Array(ImageDeleteResponseItem).from_json(response.body_io)
@@ -5215,7 +5215,7 @@ module Docker
         qs.add("limit", limit) unless limit.nil?
         qs.add("filters", filters) unless filters.nil?
       end
-      http_client.get("/v1.40/images/search?#{query}") do |response|
+      get("/v1.40/images/search?#{query}") do |response|
         case response.status_code
         when 200
           Array(ImageSearchResponseItem).from_json(response.body_io)
@@ -5231,7 +5231,7 @@ module Docker
       query = Params.build do |qs|
         qs.add("filters", filters) unless filters.nil?
       end
-      http_client.post("/v1.40/images/prune?#{query}") do |response|
+      post("/v1.40/images/prune?#{query}") do |response|
         case response.status_code
         when 200
           ImagePruneResponse.from_json(response.body_io)
@@ -5245,7 +5245,7 @@ module Docker
 
     def system_auth(auth_config : AuthConfig? = nil) : SystemAuthResponse
       headers = HTTP::Headers{"Content-Type" => "application/json"}
-      http_client.post("/v1.40/auth", headers: headers, body: auth_config.to_json) do |response|
+      post("/v1.40/auth", headers: headers, body: auth_config.to_json) do |response|
         case response.status_code
         when 200
           SystemAuthResponse.from_json(response.body_io)
@@ -5259,7 +5259,7 @@ module Docker
     end
 
     def system_info() : SystemInfo
-      http_client.get("/v1.40/info") do |response|
+      get("/v1.40/info") do |response|
         case response.status_code
         when 200
           SystemInfo.from_json(response.body_io)
@@ -5272,7 +5272,7 @@ module Docker
     end
 
     def system_version() : SystemVersion
-      http_client.get("/v1.40/version") do |response|
+      get("/v1.40/version") do |response|
         case response.status_code
         when 200
           SystemVersion.from_json(response.body_io)
@@ -5285,7 +5285,7 @@ module Docker
     end
 
     def system_ping() : String
-      http_client.get("/v1.40/_ping") do |response|
+      get("/v1.40/_ping") do |response|
         case response.status_code
         when 200
           String.from_json(response.body_io)
@@ -5298,7 +5298,7 @@ module Docker
     end
 
     def system_ping_head() : String
-      http_client.head("/v1.40/_ping") do |response|
+      head("/v1.40/_ping") do |response|
         case response.status_code
         when 200
           String.from_json(response.body_io)
@@ -5321,7 +5321,7 @@ module Docker
         qs.add("changes", changes) unless changes.nil?
       end
       headers = HTTP::Headers{"Content-Type" => "application/json"}
-      http_client.post("/v1.40/commit?#{query}", headers: headers, body: container_config.to_json) do |response|
+      post("/v1.40/commit?#{query}", headers: headers, body: container_config.to_json) do |response|
         case response.status_code
         when 201
           IdResponse.from_json(response.body_io)
@@ -5339,7 +5339,7 @@ module Docker
         qs.add("until", _until) unless _until.nil?
         qs.add("filters", filters) unless filters.nil?
       end
-      http_client.get("/v1.40/events?#{query}") do |response|
+      get("/v1.40/events?#{query}") do |response|
         case response.status_code
         when 200
           EventMessage.from_json(response.body_io)
@@ -5352,7 +5352,7 @@ module Docker
     end
 
     def system_data_usage() : SystemDataUsageResponse
-      http_client.get("/v1.40/system/df") do |response|
+      get("/v1.40/system/df") do |response|
         case response.status_code
         when 200
           SystemDataUsageResponse.from_json(response.body_io)
@@ -5365,7 +5365,7 @@ module Docker
     end
 
     def image_get(name : String) : Bytes
-      http_client.get("/v1.40/images/#{URI.encode_path_segment(name)}/get") do |response|
+      get("/v1.40/images/#{URI.encode_path_segment(name)}/get") do |response|
         case response.status_code
         when 200
           yield response.body_io
@@ -5381,7 +5381,7 @@ module Docker
       query = Params.build do |qs|
         qs.add("names", names) unless names.nil?
       end
-      http_client.get("/v1.40/images/get?#{query}") do |response|
+      get("/v1.40/images/get?#{query}") do |response|
         case response.status_code
         when 200
           yield response.body_io
@@ -5398,7 +5398,7 @@ module Docker
         qs.add("quiet", quiet) unless quiet.nil?
       end
       headers = HTTP::Headers{"Content-Type" => "application/json"}
-      http_client.post("/v1.40/images/load?#{query}", headers: headers, body: images_tarball.to_json) do |response|
+      post("/v1.40/images/load?#{query}", headers: headers, body: images_tarball.to_json) do |response|
         case response.status_code
         when 200
         when 500
@@ -5411,7 +5411,7 @@ module Docker
 
     def container_exec(id : String, exec_config : ExecConfig) : IdResponse
       headers = HTTP::Headers{"Content-Type" => "application/json"}
-      http_client.post("/v1.40/containers/#{URI.encode_path_segment(id)}/exec", headers: headers, body: exec_config.to_json) do |response|
+      post("/v1.40/containers/#{URI.encode_path_segment(id)}/exec", headers: headers, body: exec_config.to_json) do |response|
         case response.status_code
         when 201
           IdResponse.from_json(response.body_io)
@@ -5425,7 +5425,7 @@ module Docker
 
     def exec_start(id : String, exec_start_config : ExecStartConfig? = nil) : Nil
       headers = HTTP::Headers{"Content-Type" => "application/json"}
-      http_client.post("/v1.40/exec/#{URI.encode_path_segment(id)}/start", headers: headers, body: exec_start_config.to_json) do |response|
+      post("/v1.40/exec/#{URI.encode_path_segment(id)}/start", headers: headers, body: exec_start_config.to_json) do |response|
         case response.status_code
         when 200
         when 404, 409
@@ -5441,7 +5441,7 @@ module Docker
         qs.add("h", h) unless h.nil?
         qs.add("w", w) unless w.nil?
       end
-      http_client.post("/v1.40/exec/#{URI.encode_path_segment(id)}/resize?#{query}") do |response|
+      post("/v1.40/exec/#{URI.encode_path_segment(id)}/resize?#{query}") do |response|
         case response.status_code
         when 200
         when 400, 404, 500
@@ -5453,7 +5453,7 @@ module Docker
     end
 
     def exec_inspect?(id : String) : ExecInspectResponse?
-      http_client.get("/v1.40/exec/#{URI.encode_path_segment(id)}/json") do |response|
+      get("/v1.40/exec/#{URI.encode_path_segment(id)}/json") do |response|
         case response.status_code
         when 200
           ExecInspectResponse.from_json(response.body_io)
@@ -5470,7 +5470,7 @@ module Docker
       query = Params.build do |qs|
         qs.add("filters", filters) unless filters.nil?
       end
-      http_client.get("/v1.40/volumes?#{query}") do |response|
+      get("/v1.40/volumes?#{query}") do |response|
         case response.status_code
         when 200
           VolumeListResponse.from_json(response.body_io)
@@ -5484,7 +5484,7 @@ module Docker
 
     def volume_create(volume_config : VolumeCreateOptions) : Volume
       headers = HTTP::Headers{"Content-Type" => "application/json"}
-      http_client.post("/v1.40/volumes/create", headers: headers, body: volume_config.to_json) do |response|
+      post("/v1.40/volumes/create", headers: headers, body: volume_config.to_json) do |response|
         case response.status_code
         when 201
           Volume.from_json(response.body_io)
@@ -5497,7 +5497,7 @@ module Docker
     end
 
     def volume_inspect?(name : String) : Volume?
-      http_client.get("/v1.40/volumes/#{URI.encode_path_segment(name)}") do |response|
+      get("/v1.40/volumes/#{URI.encode_path_segment(name)}") do |response|
         case response.status_code
         when 200
           Volume.from_json(response.body_io)
@@ -5514,7 +5514,7 @@ module Docker
       query = Params.build do |qs|
         qs.add("force", force) unless force.nil?
       end
-      http_client.delete("/v1.40/volumes/#{URI.encode_path_segment(name)}?#{query}") do |response|
+      delete("/v1.40/volumes/#{URI.encode_path_segment(name)}?#{query}") do |response|
         case response.status_code
         when 204
         when 404, 409, 500
@@ -5529,7 +5529,7 @@ module Docker
       query = Params.build do |qs|
         qs.add("filters", filters) unless filters.nil?
       end
-      http_client.post("/v1.40/volumes/prune?#{query}") do |response|
+      post("/v1.40/volumes/prune?#{query}") do |response|
         case response.status_code
         when 200
           VolumePruneResponse.from_json(response.body_io)
@@ -5545,7 +5545,7 @@ module Docker
       query = Params.build do |qs|
         qs.add("filters", filters) unless filters.nil?
       end
-      http_client.get("/v1.40/networks?#{query}") do |response|
+      get("/v1.40/networks?#{query}") do |response|
         case response.status_code
         when 200
           Array(Network).from_json(response.body_io)
@@ -5562,7 +5562,7 @@ module Docker
         qs.add("verbose", verbose) unless verbose.nil?
         qs.add("scope", scope) unless scope.nil?
       end
-      http_client.get("/v1.40/networks/#{URI.encode_path_segment(id)}?#{query}") do |response|
+      get("/v1.40/networks/#{URI.encode_path_segment(id)}?#{query}") do |response|
         case response.status_code
         when 200
           Network.from_json(response.body_io)
@@ -5576,7 +5576,7 @@ module Docker
     end
 
     def network_delete(id : String) : Nil
-      http_client.delete("/v1.40/networks/#{URI.encode_path_segment(id)}") do |response|
+      delete("/v1.40/networks/#{URI.encode_path_segment(id)}") do |response|
         case response.status_code
         when 204
         when 403, 404, 500
@@ -5589,7 +5589,7 @@ module Docker
 
     def network_create(network_config : NetworkCreateRequest) : NetworkCreateResponse
       headers = HTTP::Headers{"Content-Type" => "application/json"}
-      http_client.post("/v1.40/networks/create", headers: headers, body: network_config.to_json) do |response|
+      post("/v1.40/networks/create", headers: headers, body: network_config.to_json) do |response|
         case response.status_code
         when 201
           NetworkCreateResponse.from_json(response.body_io)
@@ -5603,7 +5603,7 @@ module Docker
 
     def network_connect(id : String, container : NetworkConnectRequest) : Nil
       headers = HTTP::Headers{"Content-Type" => "application/json"}
-      http_client.post("/v1.40/networks/#{URI.encode_path_segment(id)}/connect", headers: headers, body: container.to_json) do |response|
+      post("/v1.40/networks/#{URI.encode_path_segment(id)}/connect", headers: headers, body: container.to_json) do |response|
         case response.status_code
         when 200
         when 403, 404, 500
@@ -5616,7 +5616,7 @@ module Docker
 
     def network_disconnect(id : String, container : NetworkDisconnectRequest) : Nil
       headers = HTTP::Headers{"Content-Type" => "application/json"}
-      http_client.post("/v1.40/networks/#{URI.encode_path_segment(id)}/disconnect", headers: headers, body: container.to_json) do |response|
+      post("/v1.40/networks/#{URI.encode_path_segment(id)}/disconnect", headers: headers, body: container.to_json) do |response|
         case response.status_code
         when 200
         when 403, 404, 500
@@ -5631,7 +5631,7 @@ module Docker
       query = Params.build do |qs|
         qs.add("filters", filters) unless filters.nil?
       end
-      http_client.post("/v1.40/networks/prune?#{query}") do |response|
+      post("/v1.40/networks/prune?#{query}") do |response|
         case response.status_code
         when 200
           NetworkPruneResponse.from_json(response.body_io)
@@ -5647,7 +5647,7 @@ module Docker
       query = Params.build do |qs|
         qs.add("filters", filters) unless filters.nil?
       end
-      http_client.get("/v1.40/plugins?#{query}") do |response|
+      get("/v1.40/plugins?#{query}") do |response|
         case response.status_code
         when 200
           Array(Plugin).from_json(response.body_io)
@@ -5663,7 +5663,7 @@ module Docker
       query = Params.build do |qs|
         qs.add("remote", remote)
       end
-      http_client.get("/v1.40/plugins/privileges?#{query}") do |response|
+      get("/v1.40/plugins/privileges?#{query}") do |response|
         case response.status_code
         when 200
           Array(PluginPrivilege).from_json(response.body_io)
@@ -5681,7 +5681,7 @@ module Docker
         qs.add("name", name) unless name.nil?
       end
       headers = HTTP::Headers{"Content-Type" => "application/json"}
-      http_client.post("/v1.40/plugins/pull?#{query}", headers: headers, body: body.to_json) do |response|
+      post("/v1.40/plugins/pull?#{query}", headers: headers, body: body.to_json) do |response|
         case response.status_code
         when 204
         when 500
@@ -5693,7 +5693,7 @@ module Docker
     end
 
     def plugin_inspect?(name : String) : Plugin?
-      http_client.get("/v1.40/plugins/#{URI.encode_path_segment(name)}/json") do |response|
+      get("/v1.40/plugins/#{URI.encode_path_segment(name)}/json") do |response|
         case response.status_code
         when 200
           Plugin.from_json(response.body_io)
@@ -5710,7 +5710,7 @@ module Docker
       query = Params.build do |qs|
         qs.add("force", force) unless force.nil?
       end
-      http_client.delete("/v1.40/plugins/#{URI.encode_path_segment(name)}?#{query}") do |response|
+      delete("/v1.40/plugins/#{URI.encode_path_segment(name)}?#{query}") do |response|
         case response.status_code
         when 200
           Plugin.from_json(response.body_io)
@@ -5726,7 +5726,7 @@ module Docker
       query = Params.build do |qs|
         qs.add("timeout", timeout) unless timeout.nil?
       end
-      http_client.post("/v1.40/plugins/#{URI.encode_path_segment(name)}/enable?#{query}") do |response|
+      post("/v1.40/plugins/#{URI.encode_path_segment(name)}/enable?#{query}") do |response|
         case response.status_code
         when 200
         when 404, 500
@@ -5738,7 +5738,7 @@ module Docker
     end
 
     def plugin_disable(name : String) : Nil
-      http_client.post("/v1.40/plugins/#{URI.encode_path_segment(name)}/disable") do |response|
+      post("/v1.40/plugins/#{URI.encode_path_segment(name)}/disable") do |response|
         case response.status_code
         when 200
         when 404, 500
@@ -5754,7 +5754,7 @@ module Docker
         qs.add("remote", remote)
       end
       headers = HTTP::Headers{"Content-Type" => "application/json"}
-      http_client.post("/v1.40/plugins/#{URI.encode_path_segment(name)}/upgrade?#{query}", headers: headers, body: body.to_json) do |response|
+      post("/v1.40/plugins/#{URI.encode_path_segment(name)}/upgrade?#{query}", headers: headers, body: body.to_json) do |response|
         case response.status_code
         when 204
         when 404, 500
@@ -5770,7 +5770,7 @@ module Docker
         qs.add("name", name)
       end
       headers = HTTP::Headers{"Content-Type" => "application/json"}
-      http_client.post("/v1.40/plugins/create?#{query}", headers: headers, body: tar_context.to_json) do |response|
+      post("/v1.40/plugins/create?#{query}", headers: headers, body: tar_context.to_json) do |response|
         case response.status_code
         when 204
         when 500
@@ -5782,7 +5782,7 @@ module Docker
     end
 
     def plugin_push(name : String) : Nil
-      http_client.post("/v1.40/plugins/#{URI.encode_path_segment(name)}/push") do |response|
+      post("/v1.40/plugins/#{URI.encode_path_segment(name)}/push") do |response|
         case response.status_code
         when 200
         when 404, 500
@@ -5795,7 +5795,7 @@ module Docker
 
     def plugin_set(name : String, body : Array(String)? = nil) : Nil
       headers = HTTP::Headers{"Content-Type" => "application/json"}
-      http_client.post("/v1.40/plugins/#{URI.encode_path_segment(name)}/set", headers: headers, body: body.to_json) do |response|
+      post("/v1.40/plugins/#{URI.encode_path_segment(name)}/set", headers: headers, body: body.to_json) do |response|
         case response.status_code
         when 204
         when 404, 500
@@ -5810,7 +5810,7 @@ module Docker
       query = Params.build do |qs|
         qs.add("filters", filters) unless filters.nil?
       end
-      http_client.get("/v1.40/nodes?#{query}") do |response|
+      get("/v1.40/nodes?#{query}") do |response|
         case response.status_code
         when 200
           Array(Node).from_json(response.body_io)
@@ -5823,7 +5823,7 @@ module Docker
     end
 
     def node_inspect?(id : String) : Node?
-      http_client.get("/v1.40/nodes/#{URI.encode_path_segment(id)}") do |response|
+      get("/v1.40/nodes/#{URI.encode_path_segment(id)}") do |response|
         case response.status_code
         when 200
           Node.from_json(response.body_io)
@@ -5840,7 +5840,7 @@ module Docker
       query = Params.build do |qs|
         qs.add("force", force) unless force.nil?
       end
-      http_client.delete("/v1.40/nodes/#{URI.encode_path_segment(id)}?#{query}") do |response|
+      delete("/v1.40/nodes/#{URI.encode_path_segment(id)}?#{query}") do |response|
         case response.status_code
         when 200
         when 404, 500, 503
@@ -5856,7 +5856,7 @@ module Docker
         qs.add("version", version)
       end
       headers = HTTP::Headers{"Content-Type" => "application/json"}
-      http_client.post("/v1.40/nodes/#{URI.encode_path_segment(id)}/update?#{query}", headers: headers, body: body.to_json) do |response|
+      post("/v1.40/nodes/#{URI.encode_path_segment(id)}/update?#{query}", headers: headers, body: body.to_json) do |response|
         case response.status_code
         when 200
         when 400, 404, 500, 503
@@ -5868,7 +5868,7 @@ module Docker
     end
 
     def swarm_inspect?() : Swarm?
-      http_client.get("/v1.40/swarm") do |response|
+      get("/v1.40/swarm") do |response|
         case response.status_code
         when 200
           Swarm.from_json(response.body_io)
@@ -5883,7 +5883,7 @@ module Docker
 
     def swarm_init(body : SwarmInitRequest) : String
       headers = HTTP::Headers{"Content-Type" => "application/json"}
-      http_client.post("/v1.40/swarm/init", headers: headers, body: body.to_json) do |response|
+      post("/v1.40/swarm/init", headers: headers, body: body.to_json) do |response|
         case response.status_code
         when 200
           String.from_json(response.body_io)
@@ -5897,7 +5897,7 @@ module Docker
 
     def swarm_join(body : SwarmJoinRequest) : Nil
       headers = HTTP::Headers{"Content-Type" => "application/json"}
-      http_client.post("/v1.40/swarm/join", headers: headers, body: body.to_json) do |response|
+      post("/v1.40/swarm/join", headers: headers, body: body.to_json) do |response|
         case response.status_code
         when 200
         when 400, 500, 503
@@ -5912,7 +5912,7 @@ module Docker
       query = Params.build do |qs|
         qs.add("force", force) unless force.nil?
       end
-      http_client.post("/v1.40/swarm/leave?#{query}") do |response|
+      post("/v1.40/swarm/leave?#{query}") do |response|
         case response.status_code
         when 200
         when 500, 503
@@ -5931,7 +5931,7 @@ module Docker
         qs.add("rotateManagerUnlockKey", rotate_manager_unlock_key) unless rotate_manager_unlock_key.nil?
       end
       headers = HTTP::Headers{"Content-Type" => "application/json"}
-      http_client.post("/v1.40/swarm/update?#{query}", headers: headers, body: body.to_json) do |response|
+      post("/v1.40/swarm/update?#{query}", headers: headers, body: body.to_json) do |response|
         case response.status_code
         when 200
         when 400, 500, 503
@@ -5943,7 +5943,7 @@ module Docker
     end
 
     def swarm_unlockkey() : UnlockKeyResponse
-      http_client.get("/v1.40/swarm/unlockkey") do |response|
+      get("/v1.40/swarm/unlockkey") do |response|
         case response.status_code
         when 200
           UnlockKeyResponse.from_json(response.body_io)
@@ -5957,7 +5957,7 @@ module Docker
 
     def swarm_unlock(body : SwarmUnlockRequest) : Nil
       headers = HTTP::Headers{"Content-Type" => "application/json"}
-      http_client.post("/v1.40/swarm/unlock", headers: headers, body: body.to_json) do |response|
+      post("/v1.40/swarm/unlock", headers: headers, body: body.to_json) do |response|
         case response.status_code
         when 200
         when 500, 503
@@ -5972,7 +5972,7 @@ module Docker
       query = Params.build do |qs|
         qs.add("filters", filters) unless filters.nil?
       end
-      http_client.get("/v1.40/services?#{query}") do |response|
+      get("/v1.40/services?#{query}") do |response|
         case response.status_code
         when 200
           Array(Service).from_json(response.body_io)
@@ -5986,7 +5986,7 @@ module Docker
 
     def service_create(body : ServiceCreate) : ServiceCreateResponse
       headers = HTTP::Headers{"Content-Type" => "application/json"}
-      http_client.post("/v1.40/services/create", headers: headers, body: body.to_json) do |response|
+      post("/v1.40/services/create", headers: headers, body: body.to_json) do |response|
         case response.status_code
         when 201
           ServiceCreateResponse.from_json(response.body_io)
@@ -6002,7 +6002,7 @@ module Docker
       query = Params.build do |qs|
         qs.add("insertDefaults", insert_defaults) unless insert_defaults.nil?
       end
-      http_client.get("/v1.40/services/#{URI.encode_path_segment(id)}?#{query}") do |response|
+      get("/v1.40/services/#{URI.encode_path_segment(id)}?#{query}") do |response|
         case response.status_code
         when 200
           Service.from_json(response.body_io)
@@ -6016,7 +6016,7 @@ module Docker
     end
 
     def service_delete(id : String) : Nil
-      http_client.delete("/v1.40/services/#{URI.encode_path_segment(id)}") do |response|
+      delete("/v1.40/services/#{URI.encode_path_segment(id)}") do |response|
         case response.status_code
         when 200
         when 404, 500, 503
@@ -6034,7 +6034,7 @@ module Docker
         qs.add("rollback", rollback) unless rollback.nil?
       end
       headers = HTTP::Headers{"Content-Type" => "application/json"}
-      http_client.post("/v1.40/services/#{URI.encode_path_segment(id)}/update?#{query}", headers: headers, body: body.to_json) do |response|
+      post("/v1.40/services/#{URI.encode_path_segment(id)}/update?#{query}", headers: headers, body: body.to_json) do |response|
         case response.status_code
         when 200
           ServiceUpdateResponse.from_json(response.body_io)
@@ -6056,7 +6056,7 @@ module Docker
         qs.add("timestamps", timestamps) unless timestamps.nil?
         qs.add("tail", tail) unless tail.nil?
       end
-      http_client.get("/v1.40/services/#{URI.encode_path_segment(id)}/logs?#{query}") do |response|
+      get("/v1.40/services/#{URI.encode_path_segment(id)}/logs?#{query}") do |response|
         case response.status_code
         when 200
           yield response.body_io
@@ -6073,7 +6073,7 @@ module Docker
       query = Params.build do |qs|
         qs.add("filters", filters) unless filters.nil?
       end
-      http_client.get("/v1.40/tasks?#{query}") do |response|
+      get("/v1.40/tasks?#{query}") do |response|
         case response.status_code
         when 200
           Array(Task).from_json(response.body_io)
@@ -6086,7 +6086,7 @@ module Docker
     end
 
     def task_inspect?(id : String) : Task?
-      http_client.get("/v1.40/tasks/#{URI.encode_path_segment(id)}") do |response|
+      get("/v1.40/tasks/#{URI.encode_path_segment(id)}") do |response|
         case response.status_code
         when 200
           Task.from_json(response.body_io)
@@ -6109,7 +6109,7 @@ module Docker
         qs.add("timestamps", timestamps) unless timestamps.nil?
         qs.add("tail", tail) unless tail.nil?
       end
-      http_client.get("/v1.40/tasks/#{URI.encode_path_segment(id)}/logs?#{query}") do |response|
+      get("/v1.40/tasks/#{URI.encode_path_segment(id)}/logs?#{query}") do |response|
         case response.status_code
         when 200
           yield response.body_io
@@ -6126,7 +6126,7 @@ module Docker
       query = Params.build do |qs|
         qs.add("filters", filters) unless filters.nil?
       end
-      http_client.get("/v1.40/secrets?#{query}") do |response|
+      get("/v1.40/secrets?#{query}") do |response|
         case response.status_code
         when 200
           Array(Secret).from_json(response.body_io)
@@ -6140,7 +6140,7 @@ module Docker
 
     def secret_create(body : SecretCreate? = nil) : IdResponse
       headers = HTTP::Headers{"Content-Type" => "application/json"}
-      http_client.post("/v1.40/secrets/create", headers: headers, body: body.to_json) do |response|
+      post("/v1.40/secrets/create", headers: headers, body: body.to_json) do |response|
         case response.status_code
         when 201
           IdResponse.from_json(response.body_io)
@@ -6153,7 +6153,7 @@ module Docker
     end
 
     def secret_inspect?(id : String) : Secret?
-      http_client.get("/v1.40/secrets/#{URI.encode_path_segment(id)}") do |response|
+      get("/v1.40/secrets/#{URI.encode_path_segment(id)}") do |response|
         case response.status_code
         when 200
           Secret.from_json(response.body_io)
@@ -6167,7 +6167,7 @@ module Docker
     end
 
     def secret_delete(id : String) : Nil
-      http_client.delete("/v1.40/secrets/#{URI.encode_path_segment(id)}") do |response|
+      delete("/v1.40/secrets/#{URI.encode_path_segment(id)}") do |response|
         case response.status_code
         when 204
         when 404, 500, 503
@@ -6183,7 +6183,7 @@ module Docker
         qs.add("version", version)
       end
       headers = HTTP::Headers{"Content-Type" => "application/json"}
-      http_client.post("/v1.40/secrets/#{URI.encode_path_segment(id)}/update?#{query}", headers: headers, body: body.to_json) do |response|
+      post("/v1.40/secrets/#{URI.encode_path_segment(id)}/update?#{query}", headers: headers, body: body.to_json) do |response|
         case response.status_code
         when 200
         when 400, 404, 500, 503
@@ -6198,7 +6198,7 @@ module Docker
       query = Params.build do |qs|
         qs.add("filters", filters) unless filters.nil?
       end
-      http_client.get("/v1.40/configs?#{query}") do |response|
+      get("/v1.40/configs?#{query}") do |response|
         case response.status_code
         when 200
           Array(Config).from_json(response.body_io)
@@ -6212,7 +6212,7 @@ module Docker
 
     def config_create(body : ConfigCreate? = nil) : IdResponse
       headers = HTTP::Headers{"Content-Type" => "application/json"}
-      http_client.post("/v1.40/configs/create", headers: headers, body: body.to_json) do |response|
+      post("/v1.40/configs/create", headers: headers, body: body.to_json) do |response|
         case response.status_code
         when 201
           IdResponse.from_json(response.body_io)
@@ -6225,7 +6225,7 @@ module Docker
     end
 
     def config_inspect?(id : String) : Config?
-      http_client.get("/v1.40/configs/#{URI.encode_path_segment(id)}") do |response|
+      get("/v1.40/configs/#{URI.encode_path_segment(id)}") do |response|
         case response.status_code
         when 200
           Config.from_json(response.body_io)
@@ -6239,7 +6239,7 @@ module Docker
     end
 
     def config_delete(id : String) : Nil
-      http_client.delete("/v1.40/configs/#{URI.encode_path_segment(id)}") do |response|
+      delete("/v1.40/configs/#{URI.encode_path_segment(id)}") do |response|
         case response.status_code
         when 204
         when 404, 500, 503
@@ -6255,7 +6255,7 @@ module Docker
         qs.add("version", version)
       end
       headers = HTTP::Headers{"Content-Type" => "application/json"}
-      http_client.post("/v1.40/configs/#{URI.encode_path_segment(id)}/update?#{query}", headers: headers, body: body.to_json) do |response|
+      post("/v1.40/configs/#{URI.encode_path_segment(id)}/update?#{query}", headers: headers, body: body.to_json) do |response|
         case response.status_code
         when 200
         when 400, 404, 500, 503
@@ -6267,7 +6267,7 @@ module Docker
     end
 
     def distribution_inspect(name : String) : DistributionInspect
-      http_client.get("/v1.40/distribution/#{URI.encode_path_segment(name)}/json") do |response|
+      get("/v1.40/distribution/#{URI.encode_path_segment(name)}/json") do |response|
         case response.status_code
         when 200
           DistributionInspect.from_json(response.body_io)
@@ -6280,7 +6280,7 @@ module Docker
     end
 
     def session() : Nil
-      http_client.post("/v1.40/session") do |response|
+      post("/v1.40/session") do |response|
         case response.status_code
         when 101
         when 400, 500
